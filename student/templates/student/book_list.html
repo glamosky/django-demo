@@ -1,0 +1,89 @@
+{% extends 'student/base.html' %}
+
+{% block title %}Book List - Library Management{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-books"></i> Library Books</h2>
+            <a href="{% url 'book_create' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add New Book
+            </a>
+        </div>
+
+        {% if books %}
+            <div class="row">
+                {% for book in books %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ book.title }}</h5>
+                            <p class="card-text">
+                                <strong>Author:</strong> {{ book.author }}<br>
+                                <strong>ISBN:</strong> {{ book.isbn }}<br>
+                                <strong>Status:</strong> 
+                                {% if book.is_checked_out %}
+                                    <span class="badge bg-danger">Checked Out</span>
+                                    {% if book.due_date %}
+                                        <br><small class="text-muted">Due: {{ book.due_date|date:"M d, Y" }}</small>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="badge bg-success">Available</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="card-footer">
+                            <div class="btn-group w-100" role="group">
+                                <a href="{% url 'book_detail' book.pk %}" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-eye"></i> View
+                                </a>
+                                <a href="{% url 'book_update' book.pk %}" class="btn btn-outline-secondary btn-sm">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                                <a href="{% url 'book_delete' book.pk %}" class="btn btn-outline-danger btn-sm">
+                                    <i class="fas fa-trash"></i> Delete
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-book fa-3x text-muted mb-3"></i>
+                <h4 class="text-muted">No books found</h4>
+                <p class="text-muted">Start by adding your first book to the library.</p>
+                <a href="{% url 'book_create' %}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Add First Book
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-info-circle"></i> API Endpoints</h5>
+            </div>
+            <div class="card-body">
+                <p>This application also provides REST API endpoints:</p>
+                <ul class="list-unstyled">
+                    <li><code>GET /api/books/</code> - List all books</li>
+                    <li><code>POST /api/books/</code> - Create a new book</li>
+                    <li><code>GET /api/books/{id}/</code> - Get book details</li>
+                    <li><code>PUT /api/books/{id}/</code> - Update a book</li>
+                    <li><code>DELETE /api/books/{id}/</code> - Delete a book</li>
+                    <li><code>POST /api/books/{id}/checkout/</code> - Check out a book</li>
+                    <li><code>POST /api/books/{id}/return_book/</code> - Return a book</li>
+                    <li><code>GET /api/books/available/</code> - Get available books</li>
+                    <li><code>GET /api/books/checked_out/</code> - Get checked out books</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

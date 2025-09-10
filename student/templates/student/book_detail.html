@@ -1,0 +1,103 @@
+{% extends 'student/base.html' %}
+
+{% block title %}{{ book.title }} - Library Management{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'book_list' %}">Books</a></li>
+                <li class="breadcrumb-item active">{{ book.title }}</li>
+            </ol>
+        </nav>
+
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3><i class="fas fa-book"></i> {{ book.title }}</h3>
+                <div>
+                    <a href="{% url 'book_update' book.pk %}" class="btn btn-outline-primary">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <a href="{% url 'book_delete' book.pk %}" class="btn btn-outline-danger">
+                        <i class="fas fa-trash"></i> Delete
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <table class="table table-borderless">
+                            <tr>
+                                <th width="150">Title:</th>
+                                <td>{{ book.title }}</td>
+                            </tr>
+                            <tr>
+                                <th>Author:</th>
+                                <td>{{ book.author }}</td>
+                            </tr>
+                            <tr>
+                                <th>ISBN:</th>
+                                <td><code>{{ book.isbn }}</code></td>
+                            </tr>
+                            <tr>
+                                <th>Status:</th>
+                                <td>
+                                    {% if book.is_checked_out %}
+                                        <span class="badge bg-danger fs-6">Checked Out</span>
+                                    {% else %}
+                                        <span class="badge bg-success fs-6">Available</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% if book.is_checked_out and book.due_date %}
+                            <tr>
+                                <th>Due Date:</th>
+                                <td>
+                                    <span class="text-danger">
+                                        <i class="fas fa-calendar-alt"></i> {{ book.due_date|date:"F d, Y \a\t g:i A" }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endif %}
+                            <tr>
+                                <th>Created:</th>
+                                <td>{{ book.created_at|date:"F d, Y \a\t g:i A" }}</td>
+                            </tr>
+                            <tr>
+                                <th>Last Updated:</th>
+                                <td>{{ book.updated_at|date:"F d, Y \a\t g:i A" }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <i class="fas fa-book fa-3x text-primary mb-3"></i>
+                                <h5>Book Actions</h5>
+                                {% if book.is_checked_out %}
+                                    <a href="{% url 'book_return' book.pk %}" class="btn btn-success btn-lg w-100 mb-2">
+                                        <i class="fas fa-undo"></i> Return Book
+                                    </a>
+                                    <p class="text-muted small">This book is currently checked out</p>
+                                {% else %}
+                                    <a href="{% url 'book_checkout' book.pk %}" class="btn btn-warning btn-lg w-100 mb-2">
+                                        <i class="fas fa-sign-out-alt"></i> Check Out Book
+                                    </a>
+                                    <p class="text-muted small">This book is available for checkout</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <a href="{% url 'book_list' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Book List
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
